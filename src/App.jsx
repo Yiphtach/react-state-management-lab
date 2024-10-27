@@ -4,6 +4,7 @@ import './App.css';
 const App = () => {
   const [team, setTeam] = useState([]);
   const [money, setMoney] = useState(100);
+  const [totalStrength, setTotalStrength] = useState(0);  // Initialize totalStrength
   const [zombieFighters] = useState([
     { name: 'Survivor', price: 12, strength: 6, agility: 4, img: 'https://via.placeholder.com/150/92c952' },
     { name: 'Scavenger', price: 10, strength: 5, agility: 5, img: 'https://via.placeholder.com/150/771796' },
@@ -17,13 +18,20 @@ const App = () => {
     { name: 'Leader', price: 22, strength: 7, agility: 6, img: 'https://via.placeholder.com/150/602b9e' },
   ]);
 
+  // Helper function to calculate total team strength
+  const calculateTotalStrength = (team) => {
+    return team.reduce((total, member) => total + member.strength, 0);
+  };
+
   // Function to handle adding a fighter to the team
   const handleAddFighter = (fighter) => {
     if (money >= fighter.price) {
-      setTeam([...team, fighter]);             // Add fighter to the team
-      setMoney(money - fighter.price);         // Deduct fighter's price from money
+      const newTeam = [...team, fighter];          // Update team with new member
+      setTeam(newTeam);                            // Set the updated team
+      setMoney(money - fighter.price);             // Deduct fighter's price from money
+      setTotalStrength(calculateTotalStrength(newTeam));  // Recalculate total strength
     } else {
-      console.log("Not enough money");         // Log if there's not enough money
+      console.log("Not enough money");             // Log if there's not enough money
     }
   };
 
@@ -31,7 +39,10 @@ const App = () => {
     <div>
       <h1>Zombie Fighters</h1>
       <p>Money: ${money}</p> 
+      <p>Total Team Strength: {totalStrength}</p>  {/* Display total strength */}
 
+      {/* Display zombieFighters list */}
+      <h2>Available Fighters</h2>
       <ul>
         {zombieFighters.map((fighter, index) => (
           <li key={index}>
@@ -44,6 +55,24 @@ const App = () => {
           </li>
         ))}
       </ul>
+
+      {/* Display team members or message */}
+      <h2>Your Team</h2>
+      {team.length === 0 ? (
+        <p>Pick some team members!</p>   // Message if no members in team
+      ) : (
+        <ul>
+          {team.map((member, index) => (
+            <li key={index}>
+              <img src={member.img} alt={`${member.name} avatar`} />
+              <h2>{member.name}</h2>
+              <p>Price: ${member.price}</p>
+              <p>Strength: {member.strength}</p>
+              <p>Agility: {member.agility}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
