@@ -4,8 +4,8 @@ import './App.css';
 const App = () => {
   const [team, setTeam] = useState([]);
   const [money, setMoney] = useState(100);
-  const [totalStrength, setTotalStrength] = useState(0);  // Initialize totalStrength
-  const [totalAgility, setTotalAgility] = useState(0);    // Initialize totalAgility
+  const [totalStrength, setTotalStrength] = useState(0);
+  const [totalAgility, setTotalAgility] = useState(0);
   const [zombieFighters] = useState([
     { name: 'Survivor', price: 12, strength: 6, agility: 4, img: 'https://via.placeholder.com/150/92c952' },
     { name: 'Scavenger', price: 10, strength: 5, agility: 5, img: 'https://via.placeholder.com/150/771796' },
@@ -20,37 +20,61 @@ const App = () => {
   ]);
 
   // Helper function to calculate total team strength
-  const calculateTotalStrength = (team) => {
-    return team.reduce((total, member) => total + member.strength, 0);
-  };
+  const calculateTotalStrength = (team) => team.reduce((total, member) => total + member.strength, 0);
 
   // Helper function to calculate total team agility
-  const calculateTotalAgility = (team) => {
-    return team.reduce((total, member) => total + member.agility, 0);
-  };
+  const calculateTotalAgility = (team) => team.reduce((total, member) => total + member.agility, 0);
 
   // Function to handle adding a fighter to the team
   const handleAddFighter = (fighter) => {
     if (money >= fighter.price) {
-      const newTeam = [...team, fighter];          // Update team with new member
-      setTeam(newTeam);                            // Set the updated team
-      setMoney(money - fighter.price);             // Deduct fighter's price from money
+      const newTeam = [...team, fighter];         // Create a new team array including the new fighter
+      setTeam(newTeam);                           // Update team state
+      setMoney(money - fighter.price);            // Deduct fighter's price from money
       setTotalStrength(calculateTotalStrength(newTeam));  // Recalculate total strength
       setTotalAgility(calculateTotalAgility(newTeam));    // Recalculate total agility
     } else {
-      console.log("Not enough money");             // Log if there's not enough money
+      console.log("Not enough money");
     }
+  };
+
+  // Function to handle removing a fighter from the team
+  const handleRemoveFighter = (fighter) => {
+    const newTeam = team.filter((member) => member !== fighter); // Create a new array without the removed fighter
+    setTeam(newTeam);                                            // Update team state
+    setMoney(money + fighter.price);                             // Refund fighter's price to money
+    setTotalStrength(calculateTotalStrength(newTeam));           // Recalculate total strength
+    setTotalAgility(calculateTotalAgility(newTeam));             // Recalculate total agility
   };
 
   return (
     <div>
       <h1>Zombie Fighters</h1>
-      <p>Money: ${money}</p> 
-      <p>Total Team Strength: {totalStrength}</p>  {/* Display total strength */}
-      <p>Total Team Agility: {totalAgility}</p>    {/* Display total agility */}
+      <p>Money: ${money}</p>
+      <p>Total Team Strength: {totalStrength}</p>
+      <p>Total Team Agility: {totalAgility}</p>
+
+      {/* Display team members or message */}
+      <h2>Team</h2>
+      {team.length === 0 ? (
+        <p>Pick some team members!</p>
+      ) : (
+        <ul>
+          {team.map((member, index) => (
+            <li key={index}>
+              <img src={member.img} alt={`${member.name} avatar`} />
+              <h2>{member.name}</h2>
+              <p>Price: ${member.price}</p>
+              <p>Strength: {member.strength}</p>
+              <p>Agility: {member.agility}</p>
+              <button onClick={() => handleRemoveFighter(member)}>Remove</button>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {/* Display zombieFighters list */}
-      <h2>Available Fighters</h2>
+      <h2>Fighters</h2>
       <ul>
         {zombieFighters.map((fighter, index) => (
           <li key={index}>
@@ -63,24 +87,6 @@ const App = () => {
           </li>
         ))}
       </ul>
-
-      {/* Display team members or message */}
-      <h2>Your Team</h2>
-      {team.length === 0 ? (
-        <p>Pick some team members!</p>   // Message if no members in team
-      ) : (
-        <ul>
-          {team.map((member, index) => (
-            <li key={index}>
-              <img src={member.img} alt={`${member.name} avatar`} />
-              <h2>{member.name}</h2>
-              <p>Price: ${member.price}</p>
-              <p>Strength: {member.strength}</p>
-              <p>Agility: {member.agility}</p>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };
