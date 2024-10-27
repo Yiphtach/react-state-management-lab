@@ -5,6 +5,7 @@ const App = () => {
   const [team, setTeam] = useState([]);
   const [money, setMoney] = useState(100);
   const [totalStrength, setTotalStrength] = useState(0);  // Initialize totalStrength
+  const [totalAgility, setTotalAgility] = useState(0);    // Initialize totalAgility
   const [zombieFighters] = useState([
     { name: 'Survivor', price: 12, strength: 6, agility: 4, img: 'https://via.placeholder.com/150/92c952' },
     { name: 'Scavenger', price: 10, strength: 5, agility: 5, img: 'https://via.placeholder.com/150/771796' },
@@ -23,6 +24,11 @@ const App = () => {
     return team.reduce((total, member) => total + member.strength, 0);
   };
 
+  // Helper function to calculate total team agility
+  const calculateTotalAgility = (team) => {
+    return team.reduce((total, member) => total + member.agility, 0);
+  };
+
   // Function to handle adding a fighter to the team
   const handleAddFighter = (fighter) => {
     if (money >= fighter.price) {
@@ -30,6 +36,7 @@ const App = () => {
       setTeam(newTeam);                            // Set the updated team
       setMoney(money - fighter.price);             // Deduct fighter's price from money
       setTotalStrength(calculateTotalStrength(newTeam));  // Recalculate total strength
+      setTotalAgility(calculateTotalAgility(newTeam));    // Recalculate total agility
     } else {
       console.log("Not enough money");             // Log if there's not enough money
     }
@@ -40,6 +47,7 @@ const App = () => {
       <h1>Zombie Fighters</h1>
       <p>Money: ${money}</p> 
       <p>Total Team Strength: {totalStrength}</p>  {/* Display total strength */}
+      <p>Total Team Agility: {totalAgility}</p>    {/* Display total agility */}
 
       {/* Display zombieFighters list */}
       <h2>Available Fighters</h2>
