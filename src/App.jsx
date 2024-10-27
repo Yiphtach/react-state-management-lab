@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css';
 
 const App = () => {
@@ -16,9 +17,21 @@ const App = () => {
     { name: 'Leader', price: 22, strength: 7, agility: 6, img: 'https://via.placeholder.com/150/602b9e' },
   ]);
 
+  // Function to handle adding a fighter to the team
+  const handleAddFighter = (fighter) => {
+    if (money >= fighter.price) {
+      setTeam([...team, fighter]);             // Add fighter to the team
+      setMoney(money - fighter.price);         // Deduct fighter's price from money
+    } else {
+      console.log("Not enough money");         // Log if there's not enough money
+    }
+  };
+
   return (
     <div>
       <h1>Zombie Fighters</h1>
+      <p>Money: ${money}</p> 
+
       <ul>
         {zombieFighters.map((fighter, index) => (
           <li key={index}>
@@ -27,7 +40,7 @@ const App = () => {
             <p>Price: ${fighter.price}</p>
             <p>Strength: {fighter.strength}</p>
             <p>Agility: {fighter.agility}</p>
-            <button>Add</button>
+            <button onClick={() => handleAddFighter(fighter)}>Add</button>
           </li>
         ))}
       </ul>
